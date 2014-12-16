@@ -1,0 +1,133 @@
+﻿{% extends base %}
+{% block title %}{{ store.name }}{% endblock %}
+{% block head %}
+    {{ 'plugins/magnific-popup/magnific-popup.min.css' | asset_url | stylesheet_tag }}
+    {{ templatePage | meta_tags }}
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="banner"> 
+            {% if store.BannerImageUrl != null %}
+            {{ store.BannerImageUrl | img_tag }}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if about != null and about != '' %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="about"> 
+            {{ about }}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    {% if sections.size > 1 %}    
+    <div class="col-md-12">
+        <ul class="nav nav-tabs" style="margin-bottom:10px;">
+            {% for section in sections %}
+            {% if section.heading != "Team Members" %}
+            <li class="{{section.id}}"><a href="#{{section.id}}">{{section.heading}}</a></li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="tab-content">
+        {% for section in sections %}
+        <div class="tab-pane {{section.id}}" id="{{section.id}}">
+            {% if sections.size == 1 %}
+            <h2 class="section-heading"><span>{{section.heading}}</span></h2>
+            {% endif %}
+
+            {% if section.heading == "Listings" %}
+            <div class="col-md-8">
+                {% for listing in listings %}
+                    {% include listing-card %}                
+                {% endfor %}
+            </div>
+    
+            <div class="col-md-4" style="text-align: center;">
+                <div class="team-member-panel">
+                    <h3>Team Members</h3>
+            
+                    {% for teamMember in teamMembers %}
+                    <a href="{{ teamMember.url }}" title="{{ teamMember.fullName }}">
+                        <div class="expert-list">
+                
+                            <div class="detail">
+                                <div style="float:left">{{ teamMember.profileThumbUrl | img_tag: teamMember.fullName }}</div>
+                                <div class="display-name"><strong>{{ teamMember.fullName | escape }}</strong></div> 
+                                <div><i class="fa fa-map-marker text-muted"></i> {{ teamMember.location }} </div>                               
+                            </div>
+            
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% endif %}
+
+            {% if section.heading == "Videos" %}
+            <div class="col-md-12">
+                {% for video in videos %}
+                {{ video | video_card }}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if section.heading == "Portfolio" %}
+            <div class="col-md-12">
+                {% for portfolio in portfolios %}
+                {% include portfolio %}   
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+                
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+    {{ 'plugins/magnific-popup/jquery.magnific-popup.min.js' | asset_url | script_tag }}
+    {{ 'scripts/portfolio.js' | asset_url | script_tag }}
+
+<script>
+    $(function () {
+        // Change tab on load
+        var hash = window.location.hash;
+        hash && $('ul.nav a[href="' + hash + '"]').tab('show');
+
+        $('.nav-tabs a').click(function (e) {
+            $(this).tab('show');
+        });
+
+        // Change tab on hashchange
+        window.addEventListener('hashchange', function () {
+            var changedHash = window.location.hash;
+            changedHash && $('ul.nav a[href="' + changedHash + '"]').tab('show');
+        }, false);
+
+
+        // active first tab
+        if (hash == "")
+            $('.nav-tabs > li:first > a').trigger('click');
+
+        {% if sections.size == 1 %}
+        $('.tab-content > .video').addClass('active');
+        {% endif %}
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,84 @@
+﻿{% extends base %}
+{% block title %}{{ package.title }} - {{ store.name }}{% endblock %}
+{% block head %}
+    {{ 'plugins/magnific-popup/magnific-popup.min.css' | asset_url | stylesheet_tag }}
+    {{ templatePage | meta_tags }}
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col-xs-12">
+        <h1>{{ package.title | escape }}</h1>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Image and main body -->
+    <div class="col-md-8">
+        <div>{{ package.image580Url | img_tag: package.title, 'img-responsive img-thumbnail'}}</div>
+        
+    </div>
+    
+    <!-- Right booking info panel -->
+    <div class="col-md-4" style="text-align: center;">
+        <div>
+            <button class="book-now-btn purchase-package" data-package="{{ package.id }}">Purchase</button>
+        </div>
+
+        <ul class="listing-details">
+            <li><span class="text-muted">Price:</span> {{ package.price | money }}</li>
+        </ul>
+
+        <ul class="listing-details">
+            <li><span class="text-muted">After purchasing this package, you can book the individual sessions from your customer dashboard.</span></li>            
+        </ul>
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        {% if package.descriptionHtml %}
+        <div class="description">
+            <p>{{ package.descriptionHtml }}</p>
+        </div>
+        {% endif %}
+
+        {% if package.prerequisiteHtml %}
+        <h2 class="section-heading"><span>Prerequisite</span></h2>
+        <p>{{ package.prerequisiteHtml }}</p>
+        {% endif %}
+
+        {% if package.listings %}
+        <h2 class="section-heading"><span>Included Listings</span></h2>
+        {% endif %}
+
+        <div>
+            {% for listing in package.listings %}
+            <div class="row inclulded-listing">
+                <div class="col-md-2 text-center">                    
+                    <a href="{{listing.url}}"><img src="{{listing.image220Url}}"/></a>
+                </div>
+
+                <div class="col-md-10">
+                    
+                    <div class="details">
+                        <div class="title one-line"><a href="{{listing.url}}">{{listing.title}}</a></div>
+                        <div class="description">{{listing.descriptionHtml}}</div>
+                        <span class="duration pull-right">{{listing.duration}} mins</span>
+                        <div class="team-member">
+                            <a href="{{listing.teamMember.url}}"><img src="{{listing.teamMember.profileThumb32Url}}"/>{{listing.teamMember.displayName}}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+	
+{% block scripts %}
+    {{ 'plugins/magnific-popup/jquery.magnific-popup.min.js' | asset_url | script_tag }}
+{% endblock %}

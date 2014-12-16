@@ -1,0 +1,99 @@
+﻿{% extends base %}
+{% block title %}
+{{title}} - Order #{{ storeOrder.id }} - {{ store.name }}
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        {% if storeOrder.statusNumber == 300 %}
+        <h1><i class="fa fa-check-circle text-success"></i> Order Pending</h1> 
+        {% else %}
+        <h1><i class="fa fa-check-circle text-success"></i> Success</h1>
+        {% endif %}
+        <div class="panel panel-info">
+            <div class="panel-heading"><i class="fa fa-info-circle"></i>  Information</div>
+            <div class="panel-body">
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        {% if storeOrder.statusNumber == 300 %}
+                        <h2>Your order is being processed.</h2>
+                        {% else %}
+                        <h2>Your order has been processed.</h2>
+                        {% endif %}
+                        
+                        <h3>Thank you for your purchase!</h3>
+                        <p>Your order number is: <strong>{{ storeOrder.id }}</strong></p>
+                        <p>
+                        {% for line in storeOrder.lines %}
+                        {% if line.productTypeName == "Listing" %}
+                        <div>
+                            <i class="fa fa-calendar-o"></i> {{ line.sessionName | escape }} {{ line.sessionTime | local_time }}
+                        </div>
+                        {% elsif line.productTypeName == "VodRental" %}
+                        <div>
+                            <a href="{{ line.videoOnDemandUrl }}"><i class="fa fa-film"></i> {{ line.sessionName | escape }}</a>
+                        </div>
+                        {% elsif line.productTypeName == "VodSubscription" %}
+                            <div>
+                                <i class="fa fa-film"></i> {{ line.sessionName | escape }}
+                            </div>
+                        {% elsif line.productTypeName == "ListingPackage" %}
+                            <div>
+                                <i class="fa fa-archive"></i> {{ line.sessionName }}
+                            </div>
+                        {% endif %}
+                        {% endfor %}
+                        </p>
+                        
+                        {% if storeOrder.storeOrderPayments != null %}
+                        <p>Payment Method:<p>
+                        {% endif %}
+                        {% for payment in storeOrder.storeOrderPayments %}
+                        <div>{{ payment.publicName }}: {{ payment.amount | money }}</div>    
+                        {% endfor %}
+
+                        {% if title == "Order Pending %}
+                        <p>We're waiting for the payment processor to confirm payment. Once your payment is received, this page will refresh automatically and you will receive a booking confirmation email. You can close or navigate away from this page at any time.<p>
+                        {% else %}
+                        {% if title == "Booking Successful" %}
+                        <p>You will receive a booking confirmation email with details of your upcoming session.<p>
+                        <p>Can't find the booking confirmation email? <br/>
+                            You may need to check your Junk or Spam folder for a message from Expertory.com.</p>
+                        {% else %}
+                        <p>You will receive a {% if title == "Rental Successful" %}rental{% else %}subscription{%endif%} confirmation email with details of the video.<p>
+                        <p>Can't find the {% if title == "Rental Successful" %}rental{% else %}subscription{%endif%} confirmation email? <br/>
+                            You may need to check your Junk or Spam folder for a message from Expertory.com.</p>
+                        {% endif %}
+                        {% endif %}
+                        
+                    </div>
+                    <div class="col-md-6">
+                        <p class="text-center">
+                            {% if storeOrder.statusNumber == 500 %}
+                            <a href="{{ referralUrl }}" class="btn btn-success btn-lg">Continue</a>
+                            {% else %}
+                            <a href="{{ referralUrl }}" class="btn btn-success btn-lg" disabled="true">Continue</a>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+    
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    if( {{ storeOrder.statusNumber }} == 300)
+    {
+        setTimeout(function(){
+            window.location.reload(1);
+        }, 5000);
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,92 @@
+﻿{% extends base %}
+{% block title %}{{ video.title }} - {{ store.name }}{% endblock %}
+{% block head %}
+    {{ 'plugins/video-js/video-js.css' | asset_url | stylesheet_tag }}
+    {{ 'plugins/video-js-resolutions/video-js-resolutions.css' | asset_url | stylesheet_tag }}
+    {{ 'plugins/video-js-watermark/videojs.watermark.css' | asset_url | stylesheet_tag }}
+    {{ templatePage | meta_tags }}
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col-xs-12">
+        <h1>{{ video.title | escape }}</h1>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Image and main body -->
+    <div class="col-md-8" style="margin-bottom:20px;">
+
+         <div style="margin-bottom:20px;">
+            {% include video-player%}
+        </div>
+
+        {% if video.descriptionHtml != empty %}
+        <h2 class="section-heading"><span>Description</span></h2>
+        <p>{{ video.descriptionHtml }}</p>
+        {% endif %}    
+    </div>
+    
+    <!-- Right booking info panel -->
+    <div class="col-md-4" style="text-align: center;">
+        
+        <ul class="video-details">
+            {% if video.rentalAvailable %}
+            <li>
+                <div class="row">
+                    <div class="col-md-8">
+                        <span class="text-muted">Rental:</span> {{ video.rentalPrice | money }} {% if video.rentalPrice > 0 %}/ {{ video.rentalPeriod | period }} {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {% if video.rented == false %}
+                        {% if video.subscriptionAvailable == false or video.subscriptionAvailable == true and video.subscribed == false%}
+                        <button class="btn btn-xs btn-danger video-rental" data-video="{{ video.id }}" >Rent</button>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </li>
+            {% endif %}
+            {% if video.subscriptionAvailable %}
+            <li>
+                <div class="row">
+                    <div class="col-md-8">
+                        <span class="text-muted">Subscription:</span> {{ video.subscriptionPrice | money }} {% if video.subscriptionPrice > 0 %}/ month {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {% if video.subscribed == false %}
+                        <button class="btn btn-xs btn-success video-subscription" data-video="{{ video.id }}" >Subscribe</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </li>
+            {% endif %}
+            {% if video.rented %}
+            <li>Rental expires {{ video.rentalExpire | from_x }}</li>
+            {% endif %}
+            {% if video.author%}
+            <li><span class="text-muted">Author:</span> {{ video.author | escape }}</li>
+            {% endif %}        
+            {% if video.tags != empty %}
+            <li>
+                <div class="text-muted">Tags:</div>
+                <div>
+                {% for tag in video.tags %}        
+                <div class="label label-info" style="margin-bottom:3px;">{{tag}}</div>
+                {% endfor %}
+                </div>
+            </li>
+            {% endif %}        
+        </ul>
+
+        
+    </div>
+</div>
+
+
+{% endblock %}
+	
+{% block scripts %}
+{% include video-player-scripts%}
+{% endblock %}

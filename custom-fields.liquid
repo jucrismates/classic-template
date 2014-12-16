@@ -1,0 +1,81 @@
+﻿{% if customField.type == "SingleLineText" %}
+<div class="control-group">
+    <label class="control-label">{{ customField.name }}</label>
+    <div class="controls">
+        <input type="text" class="form-control col-md-12" name="{{ customField.id }}" ng-model="CustomFieldValues.{{ customField.id }}" {% if customField.required %}required="required"{% endif %} /> 
+        <span class="text-danger" ng-show="checkout.{{ customField.id }}.$dirty && checkout.{{ customField.id }}.$error.required && checkout.{{ customField.id }}.$attempted">Please enter {{ customField.name }}</span>
+        {% if customField.helpText %}<span class="help-block">{{ customField.helpText }}</span>{% endif %}
+    </div>
+</div>
+{% endif %}
+
+{% if customField.type == "ParagraphText" %}
+<div class="control-group">
+    <label class="control-label">{{ customField.name }}</label>
+    <div class="controls">
+        <textarea class="form-control col-md-12" name="{{ customField.id }}" ng-model="CustomFieldValues.{{ customField.id }}" rows="3"  {% if customField.required %}required="required"{% endif %}> </textarea>
+        <span class="text-danger" ng-show="checkout.{{ customField.id }}.$dirty && checkout.{{ customField.id }}.$error.required && checkout.{{ customField.id }}.$attempted ">Please enter {{ customField.name }}</span>
+        {% if customField.helpText %}<span class="help-block">{{ customField.helpText }}</span>{% endif %}
+    </div>
+</div>
+{% endif %}
+
+{% if customField.type == "Number" %}
+<div class="control-group">
+    <label class="control-label">{{ customField.name }}</label>
+    <div class="controls">
+        <input type="number" class="form-control col-md-12" name="{{ customField.id }}" ng-model="CustomFieldValues.{{ customField.id }}"  {% if customField.required %}required="required"{% endif %}" /> 
+        <span class="text-danger" ng-show="checkout.{{ customField.id }}.$dirty && checkout.{{ customField.id }}.$error.required && checkout.{{ customField.id }}.$attempted">Please enter {{ customField.name }}</span>
+        {% if customField.helpText %}<span class="help-block">{{ customField.helpText }}</span>{% endif %}
+    </div>
+</div>
+{% endif %}
+
+{% if customField.type == "Dropdown" %}
+<div class="control-group">
+    <label class="control-label">{{ customField.name }}</label>
+    <div class="controls">
+        <select name="{{ customField.id }}" class="form-control col-md-12" ng-model="CustomFieldValues.{{ customField.id }}"  {% if customField.required %}required="required"{% endif %}">
+            <option value="">Select...</option>
+            {% for o in customField.options %} 
+            <option value="{{ o }}">{{ o }}</option>
+            {% endfor %}
+            
+        </select>
+        <span class="text-danger" ng-show="checkout.{{ customField.id }}.$dirty && checkout.{{ customField.id }}.$error.required && checkout.{{ customField.id }}.$attempted">Please select {{ customField.name }}</span>
+        {% if customField.helpText %}<span class="help-block">{{ customField.helpText }}</span>{% endif %}
+    </div>
+</div>
+{% endif %}
+
+{% if customField.type == "MultipleChoice" %}
+<div class="control-group">
+    <label class="control-label">{{ customField.name }}</label>
+    <div class="controls">
+        {% for option in customField.options %}
+        <label class="radio">
+            <input type="radio" class="" name="{{ customField.id }}" ng-model="CustomFieldValues.{{ customField.id }}" value="{{ option }}"  {% if customField.required %}required="required"{% endif %}> {{ option }}
+        </label>
+        {% endfor %}
+        <span class="text-danger" ng-show="checkout.{{ customField.id }}.$dirty && checkout.{{ customField.id }}.$error.required  && checkout.{{ customField.id }}.$attempted">Please select {{ customField.name }}</span>
+        {% if customField.helpText %}<span class="help-block">{{ customField.helpText }}</span>{% endif %}
+    </div>
+</div>
+{% endif %}
+
+{% if customField.type == "Checkboxes" %}
+<div class="control-group">
+    <label class="control-label">{{ customField.name }}</label>
+    <div class="controls">
+        <checkbox-group min-required="{{ customField.required }}">
+        {% for option in customField.options %}
+        <label class="checkbox">
+            <input type="checkbox" name="{{ customField.id }}" ng-model="CustomFieldValues.{{ customField.id }}.{{ option }}" value="{{ option }}" > {{ option }}
+        </label>
+        {% endfor %}
+        </checkbox-group>
+        <span class="text-danger" ng-show="checkout.{{ customField.id }}.$dirty && checkout.{{ customField.id }}.$error.required && checkout.{{ customField.id }}.$attempted">Please check at least one item</span>
+        {% if customField.helpText %}<span class="help-block">{{ customField.helpText }}</span>{% endif %}
+    </div>
+</div>
+{% endif %}

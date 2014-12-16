@@ -1,0 +1,73 @@
+﻿{% if listing.type == "Listing" %}
+<!-- listing card -->
+<div class='class-card'>
+    <div class='class-image-wrap'>
+        <img class='class-image' src='{{listing.image220Url}}' />
+        <div class='quickview-overlay'>
+            <div class='hint'>
+                <div>
+                    <a class='btn btn-default view-details' role='button' href='{{listing.url}}' >View Details</a> 
+                </div>
+
+                <div>
+                    <button class='btn btn-default make-booking' data-listing='{{listing.id}}'>Book Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class='info'>
+        <a href='{{listing.url}}'><h3>{{listing.title}}</h3></a>
+        <div class='profile'>
+            <div class="details">
+                <div>{{listing.price | money}}</div>
+                <div>{{listing.duration}} mins</div>
+            </div>
+            <a href='{{listing.teammember.url}}'>
+                <img src='{{listing.teammember.profileThumb32Url}}' />
+                <span class='display-name'>{{listing.teammember.displayname}}</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% else %}
+<!-- package card -->
+<div class='class-card'>
+    <div class='class-image-wrap'>
+        <img class='class-image' src='{{listing.image220Url}}' />
+        <div class='quickview-overlay'>
+            <div class='hint'>
+                <div>
+                    <a class='btn btn-default view-details' role='button' href='{{listing.url}}'>View Details</a> 
+                </div>
+
+                <div>
+                    <button class='btn btn-default btn-warning purchase-package' data-package='{{listing.id}}'>Purchase</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class='info'>
+        <a href='{{listing.url}}'><h3>{{listing.title}}</h3></a>
+        <div class='profile'>
+            <div class="details">
+                <div>{{listing.price | money}}</div>
+                <div>{{listing.listings.size}} {% if listing.listings.size == 1 %}listing{% else %}listings{% endif %}</div>
+            </div>
+
+            <div class="listings-thumb">
+            {% for listing in listing.listings %}
+                <img src='{{listing.image220Url}}' class="listing-thumb-popover" data-toggle="popover" data-trigger="hover" data-html="true" data-content="<div style='display:inline-block;'><img src='{{listing.image220Url}}' style='width:40px; height: 30px; margin-right:10px; float:left;'/>{{listing.title}}</div>" data-placement="top" />
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function(){
+        $('.listing-thumb-popover').popover();
+    });
+</script>
+{% endif %}

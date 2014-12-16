@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    <title>{% block title %}{% endblock %}</title>
+    {{ 'css/classic.less' | asset_url | stylesheet_tag }}
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    
+    {{ '/Content/shared/base/base-bundle.js' | script_tag }}
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    {% block head %}
+    {% endblock %}
+</head>
+    <body class="{{ templatePage }}">
+        <nav class="navbar navbar-default navbar-static-top" role="navigation">
+            <div class="container">
+                
+
+                {% if store.selectedLogo %}
+                <!-- logo image -->
+                <div class="logo-wrap" style="height:39px;width:100%;">
+                    <a href="/">{{ store.selectedLogo | img_tag:store.name, store.selectedLogoClass }}</a>
+                </div>
+                {% endif %}
+                
+                
+
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    {% if store.selectedLogo == null %}
+                    <div class="navbar-brand">
+                        <a href="/" title="{{ store.name}}">
+                            {{ store.name | escape}}
+                        </a>
+                    </div>
+                    {% endif %}
+                    {% if store.selectedLogo %}
+                    <!-- Spacer when a logo image is used (phones) -->
+                    <div style="height:89px;width:1px;" class="visible-xs visible-sm"></div>
+                    {% endif %}
+                </div>
+                
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <!-- Navigation Links -->
+                    <ul class="nav navbar-nav navbar-right">
+                        {% if session.isLoggedIn == false %}
+                        <li><a href="/login">Login</a></li>
+                        {% endif %}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Menu <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#" class="view-cart">View Cart</a></li>
+                                {% if session.isLoggedIn %}
+                                <li><a href="/dashboard">Dashboard</a></li>
+
+                                {% if menus.size > 0 %}
+                                <li class="divider"></li>
+                                {% endif %}
+
+                                {% for menu in menus %}
+                                <li><a href="{{menu.url}}">{{menu.title}}</a></li>
+                                {% endfor %}
+
+                                <li class="divider"></li>
+                                <li><a href="/logout">Log Out</a></li>
+                                {% else %}
+
+                                {% if menus.size > 0 %}
+                                <li class="divider"></li>
+                                {% endif %}
+
+                                {% for menu in menus %}
+                                <li><a href="{{menu.url}}">{{menu.title}}</a></li>
+                                {% endfor %}
+
+                                {% endif %}
+                            </ul>
+                        </li>
+                    </ul>
+                    {% if session.isLoggedIn && session.firstname != null %}
+                    <p class="navbar-text navbar-right">
+                        <i class="fa fa-user"></i> 
+                        {% if session.firstname == null %}
+                        {{ session.email | escape }}
+                        {% else %}
+                        {{ session.firstName | escape }} {{ session.lastName | escape }}
+                        {% endif %}
+                    </p>
+                    {% endif %}
+                    
+                    <!-- Search Form -->
+                    <div class="col-xs-5 col-sm-3 navbar-left">
+                        <form class="navbar-form" role="search" action="/search" method="GET">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search" name="query" id="query">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    
+                </div>
+                
+                {% if store.selectedLogo %}
+                <!-- Spacer when a logo image is used (desktop) -->
+                <div style="height:39px;width:100%;" class="visible-md visible-lg"></div>
+                {% endif %}
+            </div>
+        </nav>
+        
+        {% block belownav %}{% endblock %}
+        
+        <div class="container">
+            <!-- Page Content -->
+            {% block content %}{% endblock %} 
+        </div>
+        
+        <div id="footer">
+            <div class="container">
+                <small class="pull-right text-muted">Copyright &copy; {{ dateTime | date: "yyyy" }}</small>
+                <a href="http://www.expertory.com"><small class="text-muted powered-by">Powered by{{ 'images/Expertory-logo-small.png' | asset_url | img_tag:'Expertory' }}</small></a>
+            </div>
+        </div>
+
+        <!-- scripts -->
+        
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+        {{ bookingPluginUrl | script_tag }}
+        {% block scripts %}
+        {% endblock %}
+    </body>
+</html>

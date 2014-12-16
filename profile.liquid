@@ -1,0 +1,72 @@
+﻿{% extends base %}
+{% block title %}{{ teamMember.displayName }} - {{ store.name }}{% endblock %}
+{% block head %}
+    {{ 'plugins/magnific-popup/magnific-popup.min.css' | asset_url | stylesheet_tag }}
+    {{ templatePage | meta_tags }}
+{% endblock %}
+{% block belownav %}
+
+<div class="top-banner">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="banner"> {{ teamMember.BannerImageUrl | img_tag }}</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <h1>{{ teamMember.profileImageUrl | img_tag: teamMember.displayName, 'profile' }} {{ teamMember.fullName | escape }}</h1>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <!-- Image and main body -->
+    <div class="col-md-8">
+        {% if teamMember.profileDescription != empty %}
+        <div class="text-justify">{{ teamMember.profileDescription }}</div>
+        <h2 class="section-heading"><span>Listings</span></h2>
+        {% endif %}
+
+        <div>
+            {% for listing in listings %}
+                {% include listing-card %}     
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="col-md-4" style="text-align: center;">
+        <div class="team-member-panel">
+            
+            <h2 class="section-heading no-line"><span>Location</span></h2>
+            <div>{{ teamMember.location }}</div>
+            
+            {% if teamMember.qualificationsHtml != empty %}
+            <h2 class="section-heading"><span>Qualifications</span></h2>
+            <div>{{ teamMember.qualificationsHtml }}</div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+{% if portfolios != empty  %}
+<div class="row" id="portfolio">
+    <div class="col-md-12">
+        <h2 class="section-heading"><span>Portfolio</span></h2>
+        {% for portfolio in portfolios %}
+        {% include portfolio %}   
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+	
+{% block scripts %}
+    {{ 'plugins/magnific-popup/jquery.magnific-popup.min.js' | asset_url | script_tag }}
+    {{ 'scripts/portfolio.js' | asset_url | script_tag }}
+{% endblock %}

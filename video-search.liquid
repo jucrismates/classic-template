@@ -1,0 +1,94 @@
+﻿{% extends base %}
+{% block title %}{{search.query}} - {{ store.name }}{% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+
+{% if videos != empty %}
+<div class="row">
+    <div class="col-md-12 search-nav">
+        <ul class="nav nav-pills" role="tablist">
+            <li><a  href="/search?query={{ search.query }}">Listings</a></li>
+            <li class="active"><a>Videos</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="divider"></div>
+{% endif %}
+
+{% if search.query != empty %}
+<div class="row listing-result">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Results for "{{ search.query }}"</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                {% for video in videos %}
+                {{ video | video_card }}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+{% if page.prev != true %}
+{% assign prev = 'disabled' %}
+{% endif %}
+
+{% if page.next != true %}
+{% assign next = 'disabled' %}
+{% endif %}
+
+{% if page.next != true %}
+{% assign next = 'disabled' %}
+{% endif %}
+
+{% if page.totalResults > 0 %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="text-center">
+            <ul class="pagination">
+                {% if page.prev %}
+                <li><a href="/search/video?query={{search.query}}&page={{page.number| minus:1}}">&laquo;</a></li>
+                {% else %}
+                <li class="disabled"><a>&laquo;</a></li>
+                {% endif %}
+
+                {% for i in (1...page.totalPages) %}
+                {% if i == page.number %}
+                {% assign current = 'active' %}
+                {% else %}
+                {% assign current = '' %}
+                {% endif %}
+                <li class="{{ current }}"><a href="/search/video?query={{search.query}}&page={{i}}">{{i}}</a></li>
+                {% endfor %}                                
+
+                {% if page.next %}
+                <li><a href="/search/video?query={{search.query}}&page={{page.number | plus:1}}">&raquo;</a></li>
+                {% else %}
+                <li class="disabled"><a>&raquo;</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if page.totalResults == 0 %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="text-center">
+            <h1>No results.</h1>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

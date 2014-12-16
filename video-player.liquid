@@ -1,0 +1,52 @@
+﻿<div class="video-player">
+    {% if video.availableToWatch == true %}
+    <video id="video-player" class="video-js vjs-default-skin" controls preload="none" width="auto" height="auto" poster="{{ video.thumbnail720Url }}" data-setup="{}">
+        {% for asset in video.assets %}
+        <source src="{{ asset.url }}" type='video/mp4' data-res="{{ asset.type }}">
+        {% endfor %}
+        <p>Video Playback Not Supported</p>  
+    </video>
+    {% else %}
+        {% if video.previewVideoUrl360p != null %}
+            <video id="video-player" class="video-js vjs-default-skin" controls autoplay preload="auto" width="auto" height="auto" poster="{{ video.thumbnail720Url }}" data-setup="{}">
+                <source src="{{ video.previewVideoUrl360p}}" type='video/mp4' >
+                <p>Video Playback Not Supported</p>  
+            </video>
+        {% else %}
+            <a data-toggle="modal" data-target=".video-preview-modal">
+                <div class="video-js vjs-default-skin" style="padding:0; background-color:#fff !important;">
+                <div class="img-responsive img-thumbnail img-thumbnail-video">{{ video.thumbnail720Url | img_tag: video.title}}</div>
+                <div class="vjs-big-play-button" role="button" aria-live="polite" tabindex="0" aria-label="play video"><span aria-hidden="true"></span></div>
+                </div>
+            </a>
+        {% endif %}
+    {% endif %}
+        
+    <div class="right-click-alert" style="display: none; border-radius:5px; background-color: #fff; border: 1px solid #eee; padding: 5px 10px; z-index:5; width: 170px;">
+        <div class="text-center">
+            <a href="http://www.expertory.com"><small class="text-muted powered-by">Powered by{{ 'images/Expertory-logo-small.png' | asset_url | img_tag:'Expertory' }}</small></a>
+        </div>
+    </div>
+
+    <div class="modal fade video-preview-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" >
+                <div class="modal-header" style="border:none;">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                </div>
+            
+                <div class="modal-body" style="text-align:center; padding: 20px 50px 50px 50px;">
+                    {% include video-purchase-partial %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="end-frame" style="display:none;">
+        <div class="end-frame" style="display:none;">
+            <div class="panel">
+            {% include video-purchase-partial %}
+            </div>
+        </div>
+    </div>
+</div>
